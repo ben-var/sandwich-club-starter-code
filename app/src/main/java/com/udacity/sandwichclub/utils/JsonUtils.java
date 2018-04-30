@@ -28,22 +28,15 @@ public class JsonUtils {
         List<String> ingredientsList;
         Sandwich parsedSandwich;
 
-        // names of sandwich object as defined in JSON string in strings.xml
+        // keys that correspond to JSONStrings for each sandwich
         String NAME_KEY =  "name";
         String MAINNAME_KEY = "mainName";
         String OTHERNAMES_KEY = "alsoKnownAs";
-
-        // origin key as defined in JSON string in strings.xml (object stores as List<String>)
         String ORIGIN_KEY = "placeOfOrigin";
         String DESCRIPTION_KEY = "description";
-
-        // key name for image path and filename as defined in JSON string in strings.xml
         String IMAGE_KEY = "image";
-
-        // ingredients key as defined in JSON string in strings.xml (object stores as List<String>)
         String INGREDIENTS_KEY = "ingredients";
 
-        // separate try / catch to simplify debugging with different Log statement.
         try {
             sandwichJSON = new JSONObject(json);
         } catch (JSONException e) {
@@ -56,7 +49,6 @@ public class JsonUtils {
             JSONObject nameObject = sandwichJSON.getJSONObject(NAME_KEY);
             String mainName = nameObject.getString(MAINNAME_KEY);
 
-            // grabbing alsoKnownAs from JSON Obj, then transferring contents to local List<String>
             JSONArray alsoKnownAs = nameObject.getJSONArray(OTHERNAMES_KEY);
             alsoKnownAsList = new ArrayList<>(alsoKnownAs.length());
             for (int i = 0; i < alsoKnownAs.length(); i++) {
@@ -67,7 +59,6 @@ public class JsonUtils {
             String description = sandwichJSON.getString(DESCRIPTION_KEY);
             String imgFile = sandwichJSON.getString(IMAGE_KEY);
 
-            // grabbing ingredients from JSON obj, then transferring contents to local List<String>
             JSONArray ingredients = sandwichJSON.getJSONArray(INGREDIENTS_KEY);
             ingredientsList = new ArrayList<>(ingredients.length());
             for (int i = 0; i < ingredients.length(); i++) {
