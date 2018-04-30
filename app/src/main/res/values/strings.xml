@@ -12,6 +12,9 @@
 
     <!-- Error messages-->
     <string name="detail_error_message">Sandwich data not available</string>
+    <string name="not_applicable_message">N/A</string>
+    <string name="unknown_location_message">Unknown Origin</string>
+    <string name="image_not_loaded_message">Image of sandwich could not be loaded :(</string>
 
     <string-array name="sandwich_names">
         <item>Ham and cheese sandwich</item>

@@ -1,14 +1,17 @@
 package com.udacity.sandwichclub;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
@@ -33,7 +36,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        final ImageView ingredientsIv = findViewById(R.id.image_iv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -59,7 +62,19 @@ public class DetailActivity extends AppCompatActivity {
         populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
-                .into(ingredientsIv);
+                .into(ingredientsIv, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        // no need for action if successful
+                    }
+
+                    @Override
+                    public void onError() {
+                        ingredientsIv.setVisibility(View.GONE);
+                        Toast.makeText(DetailActivity.this,
+                                R.string.image_not_loaded_message, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         setTitle(sandwich.getMainName());
     }
@@ -80,12 +95,14 @@ public class DetailActivity extends AppCompatActivity {
 
         mMainNameView = findViewById(R.id.sandwich_main_name_view);
         mMainNameView.setText(parsedSandwich.getMainName());
+        mMainNameView.setAllCaps(true);
+        mMainNameView.setShadowLayer(7, 2, 2, Color.BLACK);
 
         mAlsoKnownView = findViewById(R.id.also_known_tv);
         List<String> otherNameList = parsedSandwich.getAlsoKnownAs();
 
         if (otherNameList == null || otherNameList.isEmpty()) {
-            mAlsoKnownView.setText("N/A");
+            mAlsoKnownView.setText(R.string.not_applicable_message);
         } else {
             for (String otherName : otherNameList) {
                 mAlsoKnownView.append(otherName);
@@ -101,8 +118,8 @@ public class DetailActivity extends AppCompatActivity {
         List<String> ingredientList = parsedSandwich.getIngredients();
 
         if (ingredientList == null || ingredientList.isEmpty()) {
-            mIngredientsView.setText("No ingredients found ... a sammy for ghosts maybe?");
-            Log.e("No ingredients found: ", "No ingredients found for" + parsedSandwich);
+            mIngredientsView.setText(R.string.detail_error_message);
+            Log.e(null, "No ingredients found for" + parsedSandwich);
         } else {
             for (String ingredient : ingredientList) {
                 mIngredientsView.append(ingredient);
@@ -116,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
 
         mOriginView = findViewById(R.id.origin_tv);
         if (parsedSandwich.getPlaceOfOrigin().length() < 1) {
-            mOriginView.setText("Unknown");
+            mOriginView.setText(R.string.unknown_location_message);
         } else {
             mOriginView.setText(parsedSandwich.getPlaceOfOrigin());
         }
